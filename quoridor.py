@@ -1,4 +1,3 @@
-from math import ceil, floor
 import numpy as np
 import os
 from time import sleep
@@ -7,15 +6,15 @@ from time import sleep
 def cls():
     """Wipes the screen altogether. Works on Linux BASH and Windows Command Line.
     Should also work on Mac OS, not sure."""
-    os.system('cls' if os.name=='nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def set_up():
-    "Sets all the global variables to their correct amount."
+    """Sets all the global variables to their correct amount."""
 
     # bringing globals in
-    global turn, grid, players, N,\
-    M, K, line, wall, row_labels, col_labels
+    global turn, grid, players, N, \
+        M, K, line, wall, row_labels, col_labels
 
     N = 8
     # length of the grid excluding the lines
@@ -25,7 +24,7 @@ def set_up():
 
     K = M - 1
     # the ordinal corresponding to the last cell in the grid
-    # (for convinience of not having to substract 1 every time)
+    # (for convenience of not having to subtract 1 every time)
 
     grid = np.full((M, M), '+')
     # first making an array of '+'s with the shape (M, M)
@@ -43,10 +42,10 @@ def set_up():
     grid[0, 2:-1:2] = '┬'
     grid[K, 2:-1:2] = '┴'
 
-    # bringing all box characters to a single list for further checkings
+    # bringing all box characters to a single list for further checking
     line = ['─', '│', '┼', '┌', '┐', '└', '┘', '┤', '┬', '├', '┴', '*']
 
-    # bringing all wall characters to a single list for further checkings
+    # bringing all wall characters to a single list for further checking
     wall = ['x', 'X']
 
     # turn = 1 indicates player 0 turn and
@@ -61,31 +60,22 @@ def set_up():
     # labels used to mark columns
     col_labels = [chr(i) for i in range(97, 97 + M - 2)]
 
-
     # a list of all the players as dictionaries of their
     # attributes such as symbol and walls left
-    players = [
-            {'symbol': 'B',
-                'row': 1,
-                'col': 2 * int(M / 4) + 1, # for setting the pawn at middle of the row
-                'walls': 5},
-
-            {'symbol': 'W',
-                'row': -2,
-                'col': 2 * int(M / 4) + 1, # for setting the pawn at middle of the row
-                'walls': 5}
-                ]
+    players = [dict(symbol='B', row=1, col=2 * int(M / 4) + 1, walls=5),
+               dict(symbol='W', row=-2, col=2 * int(M / 4) + 1, walls=5)]
     refresh_grid()
 
 
 def refresh_grid():
-    "Updates grid according to the last pawn move."
+    """Updates grid according to the last pawn move."""
+    global grid, players
     grid[players[0]['row'], players[0]['col']] = players[0]['symbol']
     grid[players[1]['row'], players[1]['col']] = players[1]['symbol']
 
 
 def move(player, vector):
-    "Moves player one cell with the vector given."
+    """Moves player one cell with the vector given."""
     before_row = player['row']
     before_col = player['col']
     # multiplies by two because we need to skip lines
@@ -96,7 +86,7 @@ def move(player, vector):
 
 
 def display_turn():
-    "Prints on the screen which player's turn it is."
+    """Prints on the screen which player's turn it is."""
     global players
     if turn == 1:
         print(f"""
@@ -113,7 +103,7 @@ def display_turn():
 
 
 def char_to_vector(char):
-    "Converts w, a, s, d to their appropriate vectors."
+    """Converts w, a, s, d to their appropriate vectors."""
     if char == 'w':
         return [0, 1]
     elif char == 's':
@@ -121,12 +111,12 @@ def char_to_vector(char):
     elif char == 'a':
         return [-1, 0]
     elif char == 'd':
-        return [1, 0]                   
+        return [1, 0]
 
 
 def declare_winner(player):
     """Winner's pawn gets some beautiful asterisks ('*') to celebrate their
-    winnership. Nice, eh?"""
+    winner-ship. Nice, eh?"""
     global grid, winner, M, players
     index = players.index(player)
     if index == 0:
@@ -137,7 +127,7 @@ def declare_winner(player):
         grid[r, c] = players[0]['symbol']
     elif index == 1:
         winner = players[1]
-        r = -M + 1
+        r = - M + 1
         c = players[1]['col']
         grid[r - 1:r + 2, c - 1:c + 2:2] = '*'
         grid[r, c] = players[1]['symbol']
@@ -146,7 +136,7 @@ def declare_winner(player):
 
 
 def run():
-    "The main function. All the good stuff happen here!"
+    """The main function. All the good stuff happen here!"""
     global winner
     if players[0]['row'] == M - 2:
         declare_winner(players[0])
@@ -161,7 +151,7 @@ def run():
         display()
         display_turn()
         inp = input(
-        """\n\t\t[GUIDE]
+            """\n\t\t[GUIDE]
         • w for moving your pawn UP
         • s for moving your pawn DOWN
         • a for moving your pawn LEFT
@@ -174,14 +164,14 @@ def run():
 > """)
         vect = char_to_vector(inp)
         if inp in ['w', 's', 'a', 'd']:
-            vect = char_to_vector(inp)       
+            vect = char_to_vector(inp)
             if move_allowed(vect, players[turn_index]) == 'T':
                 turn *= -1
                 move(players[turn_index], vect)
                 run()
             elif move_allowed(vect, players[turn_index]) == 'J':
                 turn *= -1
-                move(players[turn_index], [2*i for i in vect])
+                move(players[turn_index], [2 * i for i in vect])
                 run()
             else:
                 warn("Incorrect! What are you missing?")
@@ -210,13 +200,13 @@ def finish():
 
 
 def is_in_wall_position_format(place):
-    "Decides whether its input has a form like 'iB' or not."
+    """Decides whether its input has a form like 'iB' or not."""
     if len(place) == 2 and place[0].isupper() and place[1].islower():
         upper = place[0]
         lower = place[1]
     elif len(place) == 2 and place[1].isupper() and place[0].islower():
         upper = place[1]
-        lower = place[0]        
+        lower = place[0]
     else:
         return False
     if upper in row_labels[1:-1] and lower in col_labels:
@@ -257,18 +247,18 @@ def move_allowed(vector, player):
     c = player['col']
     try:
         if i == 0 and j ** 2 == 1 and grid[r - 2 * j, c] == ' ' and\
-            not wall_ahead(i, j, r, c):
+                not wall_ahead(i, j, r, c):
             return 'T'
         elif j == 0 and i ** 2 == 1 and grid[r, c + 2 * i] == ' ' and\
-            not wall_ahead(i, j, r, c):
-            return 'T'        
+                not wall_ahead(i, j, r, c):
+            return 'T'
         elif i == 0 and j ** 2 == 1 and grid[r - 2 * j, c] in ['B', 'W'] and\
-            grid[r - 4 * j, c] == ' ' and\
-            not wall_ahead(i, j, r, c):
+                grid[r - 4 * j, c] == ' ' and\
+                not wall_ahead(i, j, r, c):
             return 'J'
         elif j == 0 and i ** 2 == 1 and grid[r, c + 2 * i] in ['B', 'W'] and\
-            grid[r, c + 4 * i] == ' ' and\
-            not wall_ahead(i, j, r, c):
+                grid[r, c + 4 * i] == ' ' and\
+                not wall_ahead(i, j, r, c):
             return 'J'
         else:
             return 'F'
@@ -290,16 +280,16 @@ def wall_ahead(i, j, r, c):
 
 
 def label_to_tuple(place):
-    "Converts a string looking like 'iB' to a tuple looking like (9, 4)."
+    """Converts a string looking like 'iB' to a tuple looking like (9, 4)."""
     if len(place) == 2 and place[0].isupper() and place[1].islower():
         upper = place[0]
         lower = place[1]
     elif len(place) == 2 and place[1].isupper() and place[0].islower():
         upper = place[1]
-        lower = place[0]        
+        lower = place[0]
     else:
         warn("Invalid place.")
-    return (ord(lower) - 96, - ord(upper) + 80)
+    return ord(lower) - 96, - ord(upper) + 80
 
 
 def warn(string):
@@ -323,7 +313,7 @@ def draw_wall(player, place):
         elif r % 2 == 1 and c % 2 == 1:
             warn("You can't make walls on free spaces!")
         elif grid[r, c] in wall:
-            warn("Wall is already establishid in there!")
+            warn("Wall is already established in there!")
         else:
             player['walls'] -= 1
             r = label_to_tuple(place)[1]
@@ -332,7 +322,7 @@ def draw_wall(player, place):
             turn *= -1
     else:
         warn("You don't have any walls left! Try moving.")
-    
+
 
 def plain_display():
     """Designated for developing purposes. No use in the game.
@@ -358,6 +348,7 @@ def wall_char_from_line_char(line_char):
 # Their values will be manipulated by functions.
 N = None
 M = None
+K = None
 grid = None
 line = None
 players = None
@@ -366,7 +357,6 @@ winner = None
 turn = None
 row_labels = None
 col_labels = None
-
 
 # First run of the game
 set_up()
