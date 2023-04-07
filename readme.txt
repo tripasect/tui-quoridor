@@ -1,3 +1,2 @@
 - Make sure you have the package 'numpy' installed on your computer.
-- Minor bugs are there but hopefully no major bugs.
 - Watch 'Quorider.mp4' for a look on the TUI.
