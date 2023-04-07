@@ -1,2 +1,7 @@
-- Make sure you have the package 'numpy' installed on your computer.
-- Watch 'Quorider.mp4' for a look on the TUI.
+** Watch 'Quorider.mp4' for a look on the TUI. **
+
+Requirements:
+• Numpy
+
+Usage:
+• Run 'quoridor.py' in your terminal.
