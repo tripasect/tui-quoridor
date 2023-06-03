@@ -4,5 +4,5 @@ https://github.com/tripasect/tui-quoridor/assets/59469654/4dabe6d5-ed50-4bb0-b2b
 Requirements:
 - Numpy
 
-Usage:
+Usage:<br>
 ```python3 quoridor.py```
